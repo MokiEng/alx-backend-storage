@@ -1,6 +1,6 @@
---create the "users" table with the specified attributes and constraints.
+-- Check if the table already exists, and create it only if it doesn't
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255),
     country ENUM('US', 'CO', 'TN') NOT NULL DEFAULT 'US'
