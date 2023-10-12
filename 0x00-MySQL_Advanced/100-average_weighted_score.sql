@@ -7,9 +7,15 @@ BEGIN
     DECLARE total_score DECIMAL(5, 2);
     DECLARE total_weight DECIMAL(5, 2);
 
-    SELECT SUM(score * weight) INTO total_score, SUM(weight) INTO total_weight
-    FROM corrections
-    WHERE user_id = user_id;
+    SELECT SUM(c.score * p.weight) INTO total_score
+    FROM corrections AS c
+    JOIN projects AS p ON c.project_id = p.id
+    WHERE c.user_id = user_id;
+
+    SELECT SUM(p.weight) INTO total_weight
+    FROM corrections AS c
+    JOIN projects AS p ON c.project_id = p.id
+    WHERE c.user_id = user_id;
 
     IF total_weight IS NOT NULL THEN
         SET total_score = total_score / total_weight;
@@ -18,7 +24,7 @@ BEGIN
     END IF;
 
     UPDATE users
-    SET average_weighted_score = total_score
+    SET average_score = total_score
     WHERE id = user_id;
 END $$
 
