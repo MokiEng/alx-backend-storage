@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """ 8-main """
-from pymongo import MongoClient
 
 
 def list_all(mongo_collection):
