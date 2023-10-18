@@ -11,12 +11,12 @@ def count_calls(method: Callable) -> Callable:
     a system to count how many times methods of the Cache class are called.
     """
     @wraps(method)
-    def invoker(self, *args, **kwargs) -> Any:
+    def wrapper(self, *args, **kwargs) -> Any:
         """Get the qualified name of the method."""
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
-    return invoker
+    return wrapper
 
 def call_history(method: Callable) -> Callable:
     '''Tracks the call details of a method in a Cache class.
