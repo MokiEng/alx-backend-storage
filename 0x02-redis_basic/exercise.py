@@ -36,8 +36,8 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 def replay(fn: Callable) -> None:
-    """
-    a replay function to display the history of calls of a particular function.
+    """a replay function to display the history
+    of calls of a particular function.
     """
     if fn is None or not hasattr(fn, '__self__'):
         return
