@@ -7,17 +7,16 @@ from typing import Any, Callable, Union
 
 
 def count_calls(method: Callable) -> Callable:
-    '''Tracks the number of calls made to a method in a Cache class.
-    '''
+    """
+    a system to count how many times methods of the Cache class are called.
+    """
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
-        '''Invokes the given method after incrementing its call counter.
-        '''
+        """Get the qualified name of the method."""
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
     return invoker
-
 
 def call_history(method: Callable) -> Callable:
     '''Tracks the call details of a method in a Cache class.
