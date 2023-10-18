@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """exercise file"""
-import redis
 import uuid
-from typing import Union
+import redis
+from functools import wraps
+from typing import Any, Callable, Union
 
 
 class Cache:
     """cache class"""
-    def __init__(self):
+    def __init__(self) -> None:
         """ Create a Redis client"""
         self._redis = redis.Redis()
-
-        self._redis.flushdb()
-
+        self._redis.flushdb(True)
+    @call_history
+    @count_calls
+    
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ Generate a random key using UUID"""
         key = str(uuid.uuid4())
