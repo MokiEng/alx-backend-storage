@@ -18,6 +18,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """a call_history decorator to store the history of
     inputs and outputs for a particular function.
@@ -34,6 +35,7 @@ def call_history(method: Callable) -> Callable:
             self._redis.rpush(out_key, output)
         return output
     return wrapper
+
 
 def replay(fn: Callable) -> None:
     """a replay function to display the history
@@ -59,15 +61,17 @@ def replay(fn: Callable) -> None:
             fcn_input.decode("utf-8"),
             fcn_output,
         ))
+
+
 class Cache:
     """cache class"""
     def __init__(self) -> None:
         """ Create a Redis client"""
         self._redis = redis.Redis()
         self._redis.flushdb(True)
+
     @call_history
     @count_calls
-    
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ Generate a random key using UUID"""
         key = str(uuid.uuid4())
@@ -76,12 +80,16 @@ class Cache:
 
         return key
 
-    def get(self, key: str, fn: Callable = None,
-           ) -> Union[str, bytes, int, float]:
-        """ Retrieve data from Redis."""
+    def get(self, key: str, fn: Callable = None):
+        """convert the data back to the desired format
+        """
         data = self._redis.get(key)
+        if data is not None:
+            if fn:
+                return fn(data)
+            else:
+                return data
 
-        return fn(data) if fn is not None else data
     def get_str(self, key: str) -> str:
         """Retrieves a string value from a Redis."""
         return self.get(key, lambda x: x.decode('utf-8'))
