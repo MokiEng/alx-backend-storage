@@ -3,35 +3,39 @@
 particular URL and returns it.
 """
 
-import requests
 import redis
+import requests
 from functools import wraps
-from typing import Callable
 
-redis_client = redis.Redis()
-"""The module-level Redis instance."""
+r = redis.Redis()
 
 
-def data_cacher(method: Callable) -> Callable:
-    """Caches the output of fetched data."""
+def url_access_count(method):
+    """decorator for get_page function"""
     @wraps(method)
-    def wrapper(url) -> str:
-        """The wrapper function for caching the output."""
-        redis_store.incr(f'count:{url}')
-        result = redis_store.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        redis_store.set(f'count:{url}', 0)
-        redis_store.setex(f'result:{url}', 10, result)
-        return result
+    def wrapper(url):
+        """wrapper function"""
+        key = "cached:" + url
+        cached_value = r.get(key)
+        if cached_value:
+            return cached_value.decode("utf-8")
+
+            # Get new content and update cache
+        key_count = "count:" + url
+        html_content = method(url)
+
+        r.incr(key_count)
+        r.set(key, html_content, ex=10)
+        r.expire(key, 10)
+        return html_content
     return wrapper
 
 
-@data_cacher
+@url_access_count
 def get_page(url: str) -> str:
-    """ Check if the URL is cached."""
-    return requests.get(url).text
+    """obtain the HTML content of a particular"""
+    results = requests.get(url)
+    return results.text
 
 
 if __name__ == "__main__":
