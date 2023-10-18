@@ -8,6 +8,7 @@ import redis
 from functools import wraps
 from typing import Callable
 
+
 redis_client = redis.Redis()
 """The module-level Redis instance."""
 
