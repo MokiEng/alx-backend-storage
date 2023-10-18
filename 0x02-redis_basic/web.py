@@ -8,7 +8,6 @@ import redis
 from functools import wraps
 from typing import Callable
 
-
 redis_client = redis.Redis()
 """The module-level Redis instance."""
 
@@ -33,7 +32,3 @@ def data_cacher(method: Callable) -> Callable:
 def get_page(url: str) -> str:
     """ Check if the URL is cached."""
     return requests.get(url).text
-  
-
-if __name__ == "__main__":
-    get_page('http://slowwly.robertomurray.co.uk')
