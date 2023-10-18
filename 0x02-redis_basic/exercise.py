@@ -19,12 +19,12 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 def call_history(method: Callable) -> Callable:
-    '''Tracks the call details of a method in a Cache class.
-    '''
+    """a call_history decorator to store the history of
+    inputs and outputs for a particular function.
+    """
     @wraps(method)
-    def invoker(self, *args, **kwargs) -> Any:
-        '''Returns the method's output after storing its inputs and output.
-        '''
+    def wrapper(self, *args, **kwargs) -> Any:
+        """Get the qualified name of the method."""
         in_key = '{}:inputs'.format(method.__qualname__)
         out_key = '{}:outputs'.format(method.__qualname__)
         if isinstance(self._redis, redis.Redis):
@@ -33,8 +33,7 @@ def call_history(method: Callable) -> Callable:
         if isinstance(self._redis, redis.Redis):
             self._redis.rpush(out_key, output)
         return output
-    return invoker
-
+    return wrapper
 
 def replay(fn: Callable) -> None:
     '''Displays the call history of a Cache class' method.
