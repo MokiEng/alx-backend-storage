@@ -21,6 +21,16 @@ class Cache:
 
         return key
 
+    def get(self, key: str, fn: Callable = None):
+        """ Retrieve data from Redis."""
+        data = self._redis.get(key)
+
+        if data is not None:
+            if fn:
+                return fn(data)
+            else:
+                return data
+
 
 if __name__ == "__main__":
     cache = Cache()
