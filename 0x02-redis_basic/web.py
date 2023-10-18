@@ -16,6 +16,7 @@ def data_cacher(method: Callable) -> Callable:
     """Caches the output of fetched data."""
     @wraps(method)
     def wrapper(url) -> str:
+        """The wrapper function for caching the output."""
         cached_result = redis_client.get(url)
         if cached_result:
             return cached_result.decode('utf-8')
